@@ -1,0 +1,60 @@
+name: Cleanup Old Data (Every 14 Days)
+
+on:
+  schedule:
+    # Runs every 14 days (1st and 15th of each month) at 2 AM UTC
+    - cron: '0 2 1,15 * *'
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Delete old workflow runs
+        run: |
+          # Delete workflow runs older than 14 days
+          CUTOFF_DATE=$(date -d "14 days ago" +%Y-%m-%dT%H:%M:%S)
+          echo "Deleting workflow runs older than: $CUTOFF_DATE"
+          
+          # Using gh CLI to delete runs
+          gh run list --limit 100 --json createdAt,databaseId --jq '.[] | select(.createdAt < "'$CUTOFF_DATE'") | .databaseId' | while read run_id; do
+            if [ -n "$run_id" ]; then
+              gh run delete $run_id --confirm || true
+            fi
+          done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Clean up workflow artifacts
+        uses: geekyeggo/delete-artifact@v4
+        with:
+          name: '*'
+          failOnError: false
+
+      - name: Remove old Git branches
+        run: |
+          # Delete remote branches older than 14 days (exclude main and develop)
+          echo "Checking for stale branches..."
+          CUTOFF=$(date -d "14 days ago" +%s)
+          git fetch --prune
+          for branch in $(git branch -r | grep -v 'main\|develop\|HEAD'); do
+            BRANCH_TIME=$(git log -1 --format=%ct $branch 2>/dev/null || echo 0)
+            if [ $BRANCH_TIME -lt $CUTOFF ]; then
+              echo "Deleting stale branch: $branch"
+              git push origin --delete ${branch#origin/} || true
+            fi
+          done
+
+      - name: Log cleanup summary
+        run: |
+          echo "Cleanup completed at $(date)"
+          echo "Deleted workflow runs, artifacts, and branches older than 14 days"
+          echo "Archive recovery window: 14 days via Git reflog"

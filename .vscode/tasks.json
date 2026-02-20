@@ -1,0 +1,111 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "npm: install",
+      "type": "shell",
+      "command": "npm install",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "npm: start",
+      "type": "shell",
+      "command": "npm start",
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "npm: build",
+      "type": "shell",
+      "command": "npm run build",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "npm: test",
+      "type": "shell",
+      "command": "npm test",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Cleanup: Workspace (Manual)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/cleanup-workspace.ps1"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Cleanup: Workspace (Dry Run)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/cleanup-workspace.ps1",
+        "-DryRun"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Cleanup: Check Archive Status",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/check-cleanup-archive.ps1"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Cleanup: Check Archive Status (Auto-Delete Stale)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/check-cleanup-archive.ps1",
+        "-AutoDelete"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "group": "build",
+      "problemMatcher": []
+    }
+  ]
+}
