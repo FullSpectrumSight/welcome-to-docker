@@ -1,0 +1,6 @@
+services:
+  onyxori:
+    image: onyxori
+    build:
+      context: .
+      dockerfile: ./Dockerfile
