@@ -1,0 +1,42 @@
+chore: add cross-platform dependency audit & fix scripts
+
+## Changes
+- Added bash script (scripts/audit-and-fix.sh) for Linux/macOS
+- Added batch script (scripts/audit-and-fix.bat) for Windows Command Prompt
+- Added comprehensive documentation (scripts/AUDIT_README.md)
+- Updated GitHub Actions: CodeQL workflow uses latest v3 (from v2)
+
+## Features
+Scripts support:
+- [x] Full dependency audit and automatic vulnerability fixes
+- [x] Dry-run mode to preview changes
+- [x] Production-only audits (exclude devDependencies)
+- [x] Force install for conflict resolution
+- [x] Cross-platform support (Windows, Linux, macOS)
+- [x] Clean environment setup (removes node_modules, reinstalls)
+- [x] Helpful output and next-step guidance
+
+## Usage
+Linux/macOS:
+  ./scripts/audit-and-fix.sh [--dry-run|--production|--force|--help]
+
+Windows CMD:
+  scripts\audit-and-fix.bat [--dry-run|--production|--force|--help]
+
+## Standalone Execution
+These scripts can be run in any Node.js project with an npm structure:
+- Copy scripts to your project: `scripts/` directory
+- Execute as shown in AUDIT_README.md
+- No external dependencies required
+
+## Security Updates
+- Fixed deprecated `stable@0.1.8` will be handled by npm audit fix
+- This package is a transitive dependency from tsparticles/react-particles
+- No direct code changes needed - npm resolves automatically
+
+## Next Steps
+1. Run locally to test: `./scripts/audit-and-fix.sh --dry-run`
+2. Execute fix: `./scripts/audit-and-fix.sh`
+3. Review package-lock.json changes
+4. Run tests: `npm test`
+5. Commit verified changes
